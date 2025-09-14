@@ -90,6 +90,7 @@ li button {
   font-weight: bold;
   margin-left: 8px;
   cursor: pointer;
+  background-color: transparent;
 }
 .deleteBtn:hover {
   background-color: #ef240d;
@@ -104,6 +105,7 @@ li button {
   font-weight: bold;
   margin-left: 8px;
   cursor: pointer;
+  background-color: transparent;
 }
 .EditBtn:hover {
   background-color: #27ae60;

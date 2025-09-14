@@ -44,12 +44,13 @@ addBtn.addEventListener("click", () => {
     editBtn.textContent = "edit";
     editBtn.classList.add("EditBtn");
 
-    // Append buttons to div, span and div to li, and li to UL
-    todoList.appendChild(li);
     div.appendChild(editBtn);
     div.appendChild(DeleteBtn);
     li.appendChild(span);
     li.appendChild(div);
+    todoList.appendChild(li);
+
+    saveLocalTodos(inputValue);
 
     inputBox.value = "";
     inputValue = "";
@@ -57,6 +58,7 @@ addBtn.addEventListener("click", () => {
     // --------- DELETE FUNCTIONALITY ---------
     DeleteBtn.addEventListener("click", () => {
       todoList.removeChild(li);
+      deleteLocalTodo(li);
       inputBox.focus();
     });
 
@@ -65,6 +67,7 @@ addBtn.addEventListener("click", () => {
       addBtn.value = "replace";
       inputBox.value = span.textContent; // Show current task in input
       inputValue = span.textContent;
+
       disabled();
       currentEditingLi = li; // Store reference to this li
       inputBox.focus();
@@ -74,7 +77,9 @@ addBtn.addEventListener("click", () => {
   // --------- REPLACE EXISTING TASK ---------
   else if (addBtn.value === "replace") {
     // Update the text of the currently editing li
-    currentEditingLi.querySelector("span").textContent = inputValue;
+    const span = currentEditingLi.querySelector("span");
+    editTodo(span.textContent);
+    span.textContent = inputValue;
 
     // Reset button, input, and editing reference
 
@@ -85,3 +90,76 @@ addBtn.addEventListener("click", () => {
     inputBox.focus();
   }
 });
+const saveLocalTodos = (todo) => {
+  let todos;
+  if (localStorage.getItem("todos") === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem("todos"));
+  }
+  todos.push(todo);
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+const getTodo = (todo) => {
+  let todos;
+  if (localStorage.getItem("todos") === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem("todos"));
+    todos.forEach((todo) => {
+      const li = document.createElement("li");
+      const span = document.createElement("span");
+      const div = document.createElement("div");
+      const DeleteBtn = document.createElement("button");
+      const editBtn = document.createElement("button");
+
+      span.textContent = todo;
+      DeleteBtn.textContent = "remove";
+      DeleteBtn.classList.add("deleteBtn");
+      editBtn.textContent = "edit";
+      editBtn.classList.add("EditBtn");
+
+      div.appendChild(editBtn);
+      div.appendChild(DeleteBtn);
+      li.appendChild(span);
+      li.appendChild(div);
+      todoList.appendChild(li);
+
+      // delete functionality
+      DeleteBtn.addEventListener("click", () => {
+        todoList.removeChild(li);
+        deleteLocalTodo(li);
+        inputBox.focus();
+      });
+
+      // edit functionality
+      editBtn.addEventListener("click", () => {
+        addBtn.value = "replace";
+        inputBox.value = span.textContent;
+        inputValue = span.textContent;
+        disabled();
+        currentEditingLi = li;
+        inputBox.focus();
+      });
+    });
+  }
+};
+const deleteLocalTodo = (todo) => {
+  let todos;
+  if (localStorage.getItem("todos") === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem("todos"));
+  }
+  let todoText = todo.children[0].innerHTML;
+  let todoIndex = todos.indexOf(todoText);
+  todos.splice(todoIndex, 1);
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+const editTodo = (todo) => {
+  let todos = JSON.parse(localStorage.getItem("todos"));
+  let todoIndex = todos.indexOf(todo);
+  todos[todoIndex] = inputBox.value;
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+document.addEventListener("DOMContentLoaded", getTodo);

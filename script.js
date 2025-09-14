@@ -24,12 +24,12 @@ inputBox.addEventListener("input", (event) => {
   disabled();
 });
 
-let currentEditingLi = null; 
+let currentEditingLi = null;
 
 // Handle Add / Replace button click
 addBtn.addEventListener("click", () => {
   inputValue = inputBox.value;
-    if (!inputValue) return;
+  if (!inputValue) return;
   // --------- ADD NEW TASK ---------
   if (addBtn.value === "Add") {
     const li = document.createElement("li");
@@ -40,7 +40,9 @@ addBtn.addEventListener("click", () => {
 
     span.textContent = inputValue;
     DeleteBtn.textContent = "remove";
+    DeleteBtn.classList.add("deleteBtn");
     editBtn.textContent = "edit";
+    editBtn.classList.add("EditBtn");
 
     // Append buttons to div, span and div to li, and li to UL
     todoList.appendChild(li);
@@ -50,11 +52,12 @@ addBtn.addEventListener("click", () => {
     li.appendChild(div);
 
     inputBox.value = "";
-    inputValue = ""; 
+    inputValue = "";
     disabled();
     // --------- DELETE FUNCTIONALITY ---------
     DeleteBtn.addEventListener("click", () => {
       todoList.removeChild(li);
+      inputBox.focus();
     });
 
     // --------- EDIT FUNCTIONALITY ---------
@@ -74,10 +77,11 @@ addBtn.addEventListener("click", () => {
     currentEditingLi.querySelector("span").textContent = inputValue;
 
     // Reset button, input, and editing reference
-    
+
     addBtn.value = "Add";
     inputBox.value = "";
     currentEditingLi = null;
     disabled();
+    inputBox.focus();
   }
 });
